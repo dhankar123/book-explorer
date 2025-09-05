@@ -203,34 +203,39 @@ function BookDetailsModal({ id, onClose }) {
         onClick={(e) => e.stopPropagation()}
       >
         {book ? (
-
           <>
-          
-              <h2>{book.title}</h2>
-              <img
-                src={"https://books.toscrape.com" + book.thumbnail_image_url.substring(2)}
-                alt={book.title}
-                style={{ width: "50%", height: "200px" ,  borderRadius: "6px", marginBottom: "10px" }}
-              />
-              <p>
-                <strong>Price:</strong> ₹{book.price}
-              </p>
-              <p>
-                <strong>Rating:</strong> <StarRating value={book.rating} />
-              </p>
-              <p>
-                <strong>Availability:</strong>{" "}
-                {book.stock_availability ? "✅ In Stock" : "❌ Out of Stock"}
-              </p>
-              <p>
-                <a href={book.book_detail_url} target="_blank" rel="noreferrer">
-                  🔗 More Info
-                </a>
-              </p>
-              <button onClick={onClose} style={{ marginTop: "10px" }}>
-                Close
-              </button>
-            
+            <h2>{book.title}</h2>
+            <img
+              src={
+                "https://books.toscrape.com" +
+                book.thumbnail_image_url.substring(2)
+              }
+              alt={book.title}
+              style={{
+                width: "50%",
+                height: "200px",
+                borderRadius: "6px",
+                marginBottom: "10px",
+              }}
+            />
+            <p>
+              <strong>Price:</strong> ₹{book.price}
+            </p>
+            <p>
+              <strong>Rating:</strong> <StarRating value={book.rating} />
+            </p>
+            <p>
+              <strong>Availability:</strong>{" "}
+              {book.stock_availability ? "✅ In Stock" : "❌ Out of Stock"}
+            </p>
+            <p>
+              <a href={book.book_detail_url} target="_blank" rel="noreferrer">
+                🔗 More Info
+              </a>
+            </p>
+            <button onClick={onClose} style={{ marginTop: "10px" }}>
+              Close
+            </button>
           </>
         ) : (
           <p>Loading details...</p>
@@ -251,12 +256,21 @@ export default function App() {
     priceMax: "",
   });
   const [page, setPage] = useState(1);
-  const [limit] = useState(6);
+  const [limit] = useState(8); 
   const [totalPages, setTotalPages] = useState(1);
   const [selectedBookId, setSelectedBookId] = useState(null);
 
   useEffect(() => {
-    const params = { page, limit, ...filters };
+    const params = { page, limit };
+
+    if (filters.search) params.search = filters.search;
+    if (filters.rating) params.rating = filters.rating;
+    if (filters.inStock !== "") {
+      params.stock = filters.inStock === "true" ? "in" : "out";
+    }
+    if (filters.priceMin !== "") params.minPrice = Number(filters.priceMin);
+    if (filters.priceMax !== "") params.maxPrice = Number(filters.priceMax);
+
     axios.get(API_BASE, { params }).then((res) => {
       setBooks(res.data.books);
       setTotalPages(Math.ceil(res.data.total / limit));
@@ -289,7 +303,10 @@ export default function App() {
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
 
       {/* Details Modal */}
-      <BookDetailsModal id={selectedBookId} onClose={() => setSelectedBookId(null)} />
+      <BookDetailsModal
+        id={selectedBookId}
+        onClose={() => setSelectedBookId(null)}
+      />
     </div>
   );
 }
