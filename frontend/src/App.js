@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_BASE = "http://localhost:5000/api/books";
+const API_BASE = process.env.REACT_APP_API_BASE;
 
 // ⭐ Small star rating display
 function StarRating({ value }) {
@@ -96,7 +96,7 @@ function Pagination({ page, totalPages, setPage }) {
   );
 }
 
-// 🔍 Filters
+// Filters
 function Filters({ filters, setFilters }) {
   return (
     <div
