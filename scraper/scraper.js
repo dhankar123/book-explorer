@@ -15,11 +15,8 @@ const cron = require("node-cron");
 
 // PostgreSQL connection
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "book_explorer_db",
-  password: "yash123",
-  port: 5432,
+  connectionString: "ppostgresql://book_explorer_database_user:hKeROzZnOhQvUEtHU3VLdnYvzQqJfv53@dpg-d2ts4avfte5s73ahrccg-a.oregon-postgres.render.com/book_explorer_database",
+  ssl: { rejectUnauthorized: false } //  required for Render PG
 });
 
 const BASE_URL = "https://books.toscrape.com/";
